@@ -6,7 +6,6 @@ A personal portfolio website built from scratch with vanilla HTML, CSS, and Java
 
 ## 🌐 Live Site
 
-> Coming soon / deployed via Vercel
 
 ---
 
@@ -145,7 +144,7 @@ window.CONFIG = {
     uploadPreset: "YOUR_UPLOAD_PRESET",
     apiKey:       "YOUR_CLOUDINARY_API_KEY"
   },
-  adminPassword: "YOUR_ADMIN_PASSWORD"
+  
 };
 ```
 

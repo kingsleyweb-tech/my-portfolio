@@ -9,62 +9,90 @@
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // ── 1. Try Firestore ────────────────────────────────────────────────────
-  let data = null;
-  if (window.FirebaseDB) {
-    try {
-      data = await window.FirebaseDB.dbLoad();
-    } catch (e) {
-      console.warn('[Portfolio] Firestore load failed, falling back:', e.message);
-    }
+document.addEventListener('DOMContentLoaded', () => {
+  // ── 1. Load Local / Cached Data Instantly (0ms delay) ───────────────────
+  let localData = null;
+  try {
+    const ls = localStorage.getItem('portfolio_data');
+    if (ls) localData = JSON.parse(ls);
+  } catch (_) {}
+  
+  if (!localData) {
+    localData = window.DEFAULT_PORTFOLIO_DATA;
   }
 
-  // ── 2. Try localStorage (admin saves / fallback) ────────────────────────
-  if (!data) {
-    try {
-      const ls = localStorage.getItem('portfolio_data');
-      if (ls) data = JSON.parse(ls);
-    } catch (_) {}
-  }
-
-  // ── 3. Hard-coded defaults ──────────────────────────────────────────────
-  if (!data) data = window.DEFAULT_PORTFOLIO_DATA;
-
-  // ── 4. Supplement project images from localStorage cache ────────────────
-  // This ensures images uploaded via admin always show, even if Firestore
-  // rules prevented the URL from being saved to the cloud.
+  // Supplement image URLs from local image cache
   try {
     const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
-    if (data.projects && Object.keys(imgCache).length > 0) {
-      data.projects = data.projects.map(p => ({
+    if (localData.projects && Object.keys(imgCache).length > 0) {
+      localData.projects = localData.projects.map(p => ({
         ...p,
         image: p.image || imgCache[p.id] || ''
       }));
     }
   } catch (_) {}
 
-  // Make merged data globally available (same shape as before)
-  window.PORTFOLIO = data;
+  window.PORTFOLIO = localData;
 
-  renderProfile(data.profile);
-  renderSkills(data.skills);
-  renderExperience(data.experience);
+  // Render local data instantly
+  renderProfile(localData.profile);
+  renderSkills(localData.skills);
+  renderExperience(localData.experience);
 
-  const engProjects = data.engineeringProjects && data.engineeringProjects.length > 0
-    ? data.engineeringProjects
+  const initialEngProjects = localData.engineeringProjects && localData.engineeringProjects.length > 0
+    ? localData.engineeringProjects
     : (window.DEFAULT_PORTFOLIO_DATA ? window.DEFAULT_PORTFOLIO_DATA.engineeringProjects : []);
 
-  renderProjects(data.projects, engProjects);
-  renderAIWorkflow(data.aiWorkflow);
+  renderProjects(localData.projects, initialEngProjects);
+  renderAIWorkflow(localData.aiWorkflow);
 
-  // ── Interactions ─────────────────────────────────────────────────────────
+  // Initialize interactive features
   initTheme();
   initNav();
   initScrollEffects();
   initFilters();
   initModal();
-  initContactForm(data.profile);
+  initContactForm(localData.profile);
+
+  // ── 2. Query Firestore Asynchronously in the Background ────────────────
+  if (window.FirebaseDB) {
+    window.FirebaseDB.dbLoad().then(fbData => {
+      if (fbData) {
+        // Cache the latest copy for subsequent instant loads
+        localStorage.setItem('portfolio_data', JSON.stringify(fbData));
+
+        // Supplement fresh projects with local image cache
+        try {
+          const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+          if (fbData.projects && Object.keys(imgCache).length > 0) {
+            fbData.projects = fbData.projects.map(p => ({
+              ...p,
+              image: p.image || imgCache[p.id] || ''
+            }));
+          }
+        } catch (_) {}
+
+        window.PORTFOLIO = fbData;
+
+        // Update DOM elements dynamically with fresh Firestore data
+        renderProfile(fbData.profile);
+        renderSkills(fbData.skills);
+        renderExperience(fbData.experience);
+
+        const freshEngProjects = fbData.engineeringProjects && fbData.engineeringProjects.length > 0
+          ? fbData.engineeringProjects
+          : (window.DEFAULT_PORTFOLIO_DATA ? window.DEFAULT_PORTFOLIO_DATA.engineeringProjects : []);
+
+        renderProjects(fbData.projects, freshEngProjects);
+        renderAIWorkflow(fbData.aiWorkflow);
+
+        // Re-observe newly rendered elements for scroll animations
+        initScrollEffects();
+      }
+    }).catch(e => {
+      console.warn('[Portfolio] Firestore update deferred:', e.message);
+    });
+  }
 });
 
 /* ══════════════════════════════════════════════

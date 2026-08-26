@@ -194,117 +194,152 @@
   // ══════════════════════════════════════════════
   // RENDER
   // ══════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Load from Firestore → localStorage → defaults
-    let data = null;
-    if (window.FirebaseDB) { try { data = await window.FirebaseDB.dbLoad(); } catch(_) {} }
-    if (!data) { try { const ls = localStorage.getItem('portfolio_data'); if (ls) data = JSON.parse(ls); } catch(_) {} }
-    if (!data) data = window.DEFAULT_PORTFOLIO_DATA;
+  document.addEventListener('DOMContentLoaded', () => {
+    // ── 1. Load Local / Cached Data Instantly ──────────────────────────────
+    let localData = null;
+    try {
+      const ls = localStorage.getItem('portfolio_data');
+      if (ls) localData = JSON.parse(ls);
+    } catch (_) {}
+    if (!localData) {
+      localData = window.DEFAULT_PORTFOLIO_DATA;
+    }
 
-    // Supplement project images from localStorage cache (in case Firestore didn't save them)
+    // Supplement project images from localStorage cache
     try {
       const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
-      if (data.projects && Object.keys(imgCache).length > 0) {
-        data.projects = data.projects.map(p => ({ ...p, image: p.image || imgCache[p.id] || '' }));
+      if (localData.projects && Object.keys(imgCache).length > 0) {
+        localData.projects = localData.projects.map(p => ({ ...p, image: p.image || imgCache[p.id] || '' }));
       }
     } catch (_) {}
 
-    window.PORTFOLIO = data;
-
-    const { projects, engineeringProjects } = data;
+    window.PORTFOLIO = localData;
 
     const featuredEl = document.getElementById('featured-container');
     const gridEl     = document.getElementById('proj-grid');
     const engEl      = document.getElementById('eng-grid');
 
-    // Featured
-    const featured = projects.filter(p => p.featured);
-    featuredEl.innerHTML = featured.map((p, idx) => {
-      const order1 = idx % 2 === 0 ? '' : 'style="order:2;"';
-      const order2 = idx % 2 === 0 ? '' : 'style="order:1;"';
-      const tech = (p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
-      const img  = p.image
-        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
-        : `<div class="feat-placeholder"><i class="${p.icon || 'fas fa-laptop-code'}"></i></div>`;
-      const demo   = p.liveUrl   ? `<a href="${p.liveUrl}"   target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : '';
-      const github = p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="fab fa-github"></i> GitHub</a>` : '';
-      return `
-        <div class="featured-proj reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
-          <div class="featured-proj-img" ${order1}>${img}<span class="feat-badge">Featured</span></div>
-          <div class="featured-proj-body" ${order2}>
-            <div class="featured-proj-cat">${p.categoryLabel || ''}</div>
+    // Render helper
+    const drawPage = (d) => {
+      const { projects, engineeringProjects } = d;
+
+      // Featured
+      const featured = projects.filter(p => p.featured);
+      featuredEl.innerHTML = featured.map((p, idx) => {
+        const order1 = idx % 2 === 0 ? '' : 'style="order:2;"';
+        const order2 = idx % 2 === 0 ? '' : 'style="order:1;"';
+        const tech = (p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
+        const img  = p.image
+          ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+          : `<div class="feat-placeholder"><i class="${p.icon || 'fas fa-laptop-code'}"></i></div>`;
+        const demo   = p.liveUrl   ? `<a href="${p.liveUrl}"   target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : '';
+        const github = p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="fab fa-github"></i> GitHub</a>` : '';
+        return `
+          <div class="featured-proj reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+            <div class="featured-proj-img" ${order1}>
+              ${img}
+              <span class="feat-badge">Featured</span>
+            </div>
+            <div class="featured-proj-body" ${order2}>
+              <div class="featured-proj-cat">${p.categoryLabel || 'Web Application'}</div>
+              <h3>${p.title}</h3>
+              <p>${p.description}</p>
+              <div class="proj-tech-row">${tech}</div>
+              <div class="proj-actions">
+                ${demo}
+                ${github}
+                <button class="btn btn-ghost btn-sm modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Grid
+      const nonFeatured = projects.filter(p => !p.featured);
+      gridEl.innerHTML = nonFeatured.map(p => {
+        const tech = (p.tech || []).slice(0, 3).map(t => `<span class="tech-tag">${t}</span>`).join('');
+        const img  = p.image
+          ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+          : `<div class="proj-card-placeholder"><i class="${p.icon || 'fas fa-code'}"></i></div>`;
+        return `
+          <div class="proj-card reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+            <div class="proj-card-img">
+              ${img}
+            </div>
+            <div class="proj-card-body">
+              <div class="proj-card-cat">${p.categoryLabel || 'Web Project'}</div>
+              <h3>${p.title}</h3>
+              <p>${p.description}</p>
+              <div class="proj-card-foot">
+                <div class="proj-tech-row" style="margin-bottom:0;">${tech}</div>
+                <div class="proj-arrow"><i class="fas fa-arrow-right"></i></div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Engineering
+      const engProjList = engineeringProjects && engineeringProjects.length > 0
+        ? engineeringProjects
+        : (window.DEFAULT_PORTFOLIO_DATA ? window.DEFAULT_PORTFOLIO_DATA.engineeringProjects : []);
+
+      engEl.innerHTML = engProjList.map(p => {
+        const concepts = (p.concepts || []).map(c => `<span class="eng-concept">${c}</span>`).join('');
+        return `
+          <div class="eng-card reveal" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+            <div class="eng-icon"><i class="${p.icon || 'fas fa-cogs'}"></i></div>
             <h3>${p.title}</h3>
             <p>${p.description}</p>
-            <div class="proj-tech-row">${tech}</div>
+            <div class="eng-concepts">${concepts}</div>
             <div class="proj-actions">
-              ${demo}${github}
-              <button class="btn btn-ghost btn-sm modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
+              <button class="btn btn-ghost btn-xs modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
             </div>
-          </div>
-        </div>`;
-    }).join('');
+          </div>`;
+      }).join('');
 
-    // Non-featured grid
-    const rest = projects.filter(p => !p.featured);
-    gridEl.innerHTML = rest.map(p => {
-      const tech = (p.tech || []).slice(0, 3).map(t => `<span class="tech-tag">${t}</span>`).join('');
-      const img  = p.image
-        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
-        : `<div class="proj-card-placeholder"><i class="${p.icon || 'fas fa-code'}"></i></div>`;
-      return `
-        <div class="proj-card reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
-          <div class="proj-card-img">${img}</div>
-          <div class="proj-card-body">
-            <div class="proj-card-cat">${p.categoryLabel || ''}</div>
-            <h3>${p.title}</h3>
-            <p>${p.description}</p>
-            <div class="proj-card-foot">
-              <div class="proj-tech-row" style="margin-bottom:0;">${tech}</div>
-              <div class="proj-arrow"><i class="fas fa-arrow-right"></i></div>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
-
-    // Engineering
-    const engProjList = engineeringProjects && engineeringProjects.length > 0
-      ? engineeringProjects
-      : (window.DEFAULT_PORTFOLIO_DATA ? window.DEFAULT_PORTFOLIO_DATA.engineeringProjects : []);
-
-    engEl.innerHTML = engProjList.map(p => {
-      const concepts = (p.concepts || []).map(c => `<span class="eng-concept">${c}</span>`).join('');
-      return `
-        <div class="eng-card reveal" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
-          <div class="eng-icon"><i class="${p.icon || 'fas fa-cogs'}"></i></div>
-          <h3>${p.title}</h3>
-          <p>${p.description}</p>
-          <div class="eng-concepts">${concepts}</div>
-          <div class="proj-actions">
-            <button class="btn btn-ghost btn-xs modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
-          </div>
-        </div>`;
-    }).join('');
-
-    // ── Filters ──
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const f = btn.dataset.filter;
-        document.querySelectorAll('#featured-container .featured-proj').forEach(el =>
-          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
-        document.querySelectorAll('#proj-grid .proj-card').forEach(el =>
-          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
+      // Re-bind modal triggers for new dynamic elements
+      document.querySelectorAll('.modal-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openModal(btn.dataset.id);
+        });
       });
-    });
+      document.querySelectorAll('.featured-proj, .proj-card, .eng-card').forEach(card => {
+        card.addEventListener('click', () => openModal(card.dataset.id));
+        card.addEventListener('keydown', (e) => { if (e.key === 'Enter') openModal(card.dataset.id); });
+      });
 
-    // ── Scroll reveals ──
-    const revealObs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+      // Scroll reveals
+      const revealObs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+    };
 
+    // Draw initial local copy immediately
+    drawPage(localData);
+
+    // ── 2. Load Firestore Data Asynchronously in Background ────────────────
+    if (window.FirebaseDB) {
+      window.FirebaseDB.dbLoad().then(fbData => {
+        if (fbData) {
+          localStorage.setItem('portfolio_data', JSON.stringify(fbData));
+
+          // Supplement project images
+          try {
+            const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+            if (fbData.projects && Object.keys(imgCache).length > 0) {
+              fbData.projects = fbData.projects.map(p => ({ ...p, image: p.image || imgCache[p.id] || '' }));
+            }
+          } catch (_) {}
+
+          window.PORTFOLIO = fbData;
+          drawPage(fbData);
+        }
+      }).catch(e => {
+        console.warn('[Projects] Firestore loading deferred:', e.message);
+      });
+    }
     // ── Scroll to top ──
     const topBtn = document.getElementById('scrollTopBtn');
     window.addEventListener('scroll', () => topBtn.classList.toggle('show', scrollY > 500), { passive: true });
@@ -324,7 +359,8 @@
     };
 
     const openModal = (id) => {
-      const all = [...projects, ...(engineeringProjects || [])];
+      const data = window.PORTFOLIO || window.DEFAULT_PORTFOLIO_DATA;
+      const all = [...(data.projects || []), ...(data.engineeringProjects || [])];
       const proj = all.find(p => String(p.id) === String(id));
       if (!proj) return;
       prevActive = document.activeElement;
@@ -375,6 +411,20 @@
 
     modalClose.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+    // ── Filters ──
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('#featured-container .featured-proj').forEach(el =>
+          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
+        document.querySelectorAll('#proj-grid .proj-card').forEach(el =>
+          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
+      });
+    });
   });
 </script>
 </body>
