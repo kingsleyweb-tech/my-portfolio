@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Kingsley Anaab Portfolio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <style>
+    /* ── Admin-specific styles ─────────────────────────────────────────── */
+    :root { --admin-accent: #6366f1; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Login screen */
+    .login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    .login-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-xl);
+      padding: 48px 40px; width: 100%; max-width: 400px; text-align: center;
+    }
+    .login-logo { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+    .login-sub  { color: var(--text-3); font-size: .85rem; margin-bottom: 32px; }
+    .login-card .form-group { text-align: left; margin-bottom: 16px; }
+    .login-card label { font-size: .8rem; color: var(--text-2); display: block; margin-bottom: 6px; }
+    .login-card input {
+      width: 100%; padding: 11px 14px;
+      background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: .9rem; box-sizing: border-box;
+      transition: border-color .2s;
+    }
+    .login-card input:focus { border-color: var(--admin-accent); outline: none; }
+    .login-error { color: #f87171; font-size: .8rem; margin-top: 12px; min-height: 20px; }
+
+    /* Dashboard layout */
+    .dash-wrap { display: none; }
+    .dash-wrap.visible { display: block; }
+
+    .dash-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-logo { font-weight: 900; font-size: 1.1rem; }
+    .dash-header-right { display: flex; align-items: center; gap: 12px; }
+    .dash-save-bar {
+      background: rgba(99,102,241,.12); border-bottom: 1px solid rgba(99,102,241,.3);
+      padding: 10px 24px; display: none; align-items: center; gap: 12px;
+    }
+    .dash-save-bar.show { display: flex; }
+    .dash-save-bar span { font-size: .85rem; color: var(--text-2); flex: 1; }
+
+    /* Tab nav */
+    .dash-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--border);
+      background: var(--bg-2); padding: 0 24px; overflow-x: auto;
+    }
+    .dash-tab {
+      padding: 14px 20px; font-size: .85rem; font-weight: 600;
+      color: var(--text-3); border: none; background: none;
+      border-bottom: 2px solid transparent; cursor: pointer;
+      white-space: nowrap; transition: .2s; font-family: var(--font-display);
+    }
+    .dash-tab:hover   { color: var(--text); }
+    .dash-tab.active  { color: var(--admin-accent); border-bottom-color: var(--admin-accent); }
+
+    /* Panel */
+    .dash-panels { padding: 32px 24px; max-width: 900px; margin: 0 auto; }
+    .dash-panel   { display: none; }
+    .dash-panel.active { display: block; }
+
+    .panel-title  { font-size: 1.2rem; font-weight: 800; margin-bottom: 24px; }
+    .field-group  { margin-bottom: 20px; }
+    .field-group label { display: block; font-size: .78rem; color: var(--text-3); font-weight: 600;
+                         letter-spacing: .05em; text-transform: uppercase; margin-bottom: 7px; }
+    .field-group input,
+    .field-group textarea,
+    .field-group select {
+      width: 100%; padding: 10px 14px; box-sizing: border-box;
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: .88rem; font-family: var(--font-body);
+      transition: border-color .2s; resize: vertical;
+    }
+    .field-group input:focus,
+    .field-group textarea:focus,
+    .field-group select:focus { border-color: var(--admin-accent); outline: none; }
+    .field-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Image upload */
+    .img-upload-wrap { position: relative; }
+    .img-upload-box {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 24px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .img-upload-box:hover { border-color: var(--admin-accent); background: rgba(99,102,241,.04); }
+    .img-upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .img-upload-box .upload-icon { font-size: 1.5rem; color: var(--text-3); margin-bottom: 8px; }
+    .img-upload-box p { font-size: .78rem; color: var(--text-3); margin: 0; }
+    .img-preview {
+      width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius);
+      border: 1px solid var(--border); display: none; margin-top: 10px;
+    }
+    .img-preview.round { border-radius: 50%; }
+    .upload-progress {
+      height: 3px; background: var(--bg-3); border-radius: 99px;
+      overflow: hidden; margin-top: 8px; display: none;
+    }
+    .upload-progress-bar { height: 100%; background: var(--admin-accent); width: 0; transition: width .2s; }
+
+    /* Cards / list */
+    .admin-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-xl);
+      padding: 20px; margin-bottom: 16px; position: relative;
+    }
+    .admin-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .admin-card-header h4 { flex: 1; font-size: .95rem; font-weight: 700; }
+    .admin-card-toggle { cursor: pointer; color: var(--text-3); font-size: .8rem; background: none; border: none; }
+    .admin-card-body   { display: block; }
+    .admin-card-body.collapsed { display: none; }
+
+    .add-btn {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px dashed var(--border); border-radius: var(--radius);
+      padding: 12px 20px; width: 100%; background: none; cursor: pointer;
+      color: var(--text-2); font-size: .85rem; font-family: var(--font-display);
+      font-weight: 600; transition: .2s;
+    }
+    .add-btn:hover { border-color: var(--admin-accent); color: var(--admin-accent); }
+
+    .delete-btn {
+      background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.2);
+      color: #ef4444; border-radius: var(--radius); padding: 6px 12px;
+      font-size: .75rem; cursor: pointer; transition: .2s; font-family: var(--font-display);
+    }
+    .delete-btn:hover { background: rgba(239,68,68,.2); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--text); color: var(--bg); padding: 12px 24px; border-radius: 100px;
+      font-size: .85rem; font-weight: 600; z-index: 9999;
+      transition: transform .3s ease; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #ef4444; color: #fff; }
+
+    /* Status badge */
+    .sync-badge {
+      font-size: .72rem; padding: 4px 10px; border-radius: 100px;
+      font-family: var(--font-display); font-weight: 600;
+    }
+    .sync-badge.synced { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.25); }
+    .sync-badge.unsynced { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.25); }
+    .sync-badge.saving  { background: rgba(99,102,241,.1); color: var(--admin-accent); border: 1px solid rgba(99,102,241,.25); }
+
+    @media (max-width: 600px) {
+      .field-row { grid-template-columns: 1fr; }
+      .dash-panels { padding: 20px 16px; }
+      .login-card { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">KA</div>
+    <p class="login-sub">Portfolio Admin Dashboard</p>
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="loginPass" placeholder="Enter admin password" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="loginBtn">
+      <i class="fas fa-lock-open"></i> Sign In
+    </button>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div class="dash-wrap" id="dashWrap">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-logo">⚡ Admin Panel</div>
+    <div class="dash-header-right">
+      <span class="sync-badge synced" id="syncBadge">Synced</span>
+      <button class="btn btn-ghost btn-sm" id="themeBtn"><i class="fas fa-moon" id="themeIcon"></i></button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- Unsaved changes bar -->
+  <div class="dash-save-bar" id="saveBar">
+    <i class="fas fa-circle-info" style="color:var(--admin-accent);"></i>
+    <span>You have unsaved changes</span>
+    <button class="btn btn-primary btn-sm" id="saveAllBtn"><i class="fas fa-cloud-upload-alt"></i> Save to Firebase</button>
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="dash-tabs">
+    <button class="dash-tab active" data-tab="projects">Projects</button>
+    <button class="dash-tab" data-tab="experience">Experience</button>
+    <button class="dash-tab" data-tab="settings">Settings</button>
+  </div>
+
+  <div class="dash-panels">
+
+    <!-- ─── PROJECTS ─────────────────────────────────────────────── -->
+    <div class="dash-panel active" id="tab-projects">
+      <p class="panel-title">Projects</p>
+      <div id="projects-list"></div>
+      <button class="add-btn" id="addProjectBtn">
+        <i class="fas fa-plus"></i> Add New Project
+      </button>
+    </div>
+
+    <!-- ─── EXPERIENCE ────────────────────────────────────────────── -->
+    <div class="dash-panel" id="tab-experience">
+      <p class="panel-title">Experience &amp; Education</p>
+      <div id="experience-list"></div>
+      <button class="add-btn" id="addExpBtn">
+        <i class="fas fa-plus"></i> Add Entry
+      </button>
+    </div>
+
+
+
+    <!-- ─── SETTINGS ─────────────────────────────────────────────── -->
+    <div class="dash-panel" id="tab-settings">
+      <p class="panel-title">Settings</p>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h4><i class="fas fa-database"></i> &nbsp;Firebase Sync</h4>
+        </div>
+        <p style="font-size:.85rem; color:var(--text-2); margin-bottom:16px;">
+          Manually push all current data to Firestore, or seed it with the default data if Firestore is empty.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" id="forceSaveBtn"><i class="fas fa-cloud-upload-alt"></i> Force Save to Firebase</button>
+          <button class="btn btn-ghost btn-sm" id="seedBtn"><i class="fas fa-seedling"></i> Seed Defaults (if empty)</button>
+          <button class="btn btn-ghost btn-sm" id="reloadFromFbBtn"><i class="fas fa-cloud-download-alt"></i> Reload from Firebase</button>
+        </div>
+      </div>
+    </div><!-- /tab-settings -->
+
+  </div><!-- /dash-panels -->
+</div><!-- /dashWrap -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/firebase-db.js"></script>
+<script src="../js/cloudinary.js"></script>
+<script src="../js/portfolio-data.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   ADMIN PANEL — Firebase + Cloudinary Edition
+══════════════════════════════════════════════════════ */
+
+// ── State ───────────────────────────────────────────────────────────────────
+let CURRENT_DATA = null;  // live working copy of portfolio data
+let UNSAVED      = false; // whether there are unsaved changes
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const toast = (msg, type = 'ok') => {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = `toast${type === 'error' ? ' error' : ''} show`;
+  setTimeout(() => el.classList.remove('show'), 3500);
+};
+
+function markUnsaved() {
+  UNSAVED = true;
+  $('saveBar').classList.add('show');
+  $('syncBadge').textContent = 'Unsaved';
+  $('syncBadge').className = 'sync-badge unsynced';
+}
+function markSaved() {
+  UNSAVED = false;
+  $('saveBar').classList.remove('show');
+  $('syncBadge').textContent = 'Synced';
+  $('syncBadge').className = 'sync-badge synced';
+}
+function markSaving() {
+  $('syncBadge').textContent = 'Saving…';
+  $('syncBadge').className = 'sync-badge saving';
+}
+
+// ── SHA-256 for password ─────────────────────────────────────────────────────
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Theme ────────────────────────────────────────────────────────────────────
+(function() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+$('themeBtn').addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  $('themeIcon').className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+});
+// Set correct icon on load
+(function(){
+  const t = localStorage.getItem('theme') || 'dark';
+  $('themeIcon').className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+
+// ── Login & Session Management ────────────────────────────────────────────────
+let loginAttempts = 0;
+
+// check session immediately on page load
+(async function checkSession() {
+  const sessionStart = localStorage.getItem('admin_session_start');
+  const threeHours = 3 * 60 * 60 * 1000;
+  
+  if (sessionStart && (Date.now() - sessionStart < threeHours)) {
+    // Session is valid! Auto log in.
+    $('loginScreen').style.display = 'none';
+    $('dashWrap').classList.add('visible');
+    
+    // Auto-authenticate in the background
+    try {
+      await window.FirebaseDB.authSignInAnonymous();
+    } catch(e) {}
+    await initDashboard();
+  } else {
+    // Session expired/missing. Show login screen.
+    $('loginScreen').style.display = 'flex';
+  }
+})();
+
+async function doLogin() {
+  const pass = $('loginPass').value.trim();
+  if (!pass) return;
+  
+  const targetPassword = window.CONFIG.adminPassword || "Kingsley1234";
+
+  if (pass !== targetPassword) {
+    loginAttempts++;
+    if (loginAttempts >= 3) {
+      $('loginError').textContent = 'Incorrect password. Hint: Starts with "King"';
+    } else {
+      $('loginError').textContent = 'Incorrect password.';
+    }
+    return;
+  }
+
+  // Sign in anonymously to Firebase so write rules pass
+  try {
+    await window.FirebaseDB.authSignInAnonymous();
+  } catch(e) {
+    console.error('Firebase anon auth failed:', e);
+  }
+
+  // Success! Save session start timestamp
+  loginAttempts = 0;
+  localStorage.setItem('admin_session_start', Date.now());
+
+  $('loginScreen').style.display = 'none';
+  $('dashWrap').classList.add('visible');
+  await initDashboard();
+}
+
+$('loginBtn').addEventListener('click', doLogin);
+$('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+$('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('admin_session_start');
+  window.FirebaseDB.authSignOut();
+  location.reload();
+});
+
+// ── Init dashboard: load data then populate forms ──────────────────────────
+async function initDashboard() {
+  // Load from Firestore first, then fallback
+  let data = await window.FirebaseDB.dbLoad();
+  if (!data) {
+    const ls = localStorage.getItem('portfolio_data');
+    data = ls ? JSON.parse(ls) : { ...window.DEFAULT_PORTFOLIO_DATA };
+  }
+
+  // Supplement project images from localStorage cache
+  // (so images always show in dashboard even if Firestore save failed)
+  try {
+    const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+    if (data.projects && Object.keys(imgCache).length > 0) {
+      data.projects = data.projects.map(p => ({
+        ...p,
+        image: p.image || imgCache[p.id] || ''
+      }));
+    }
+  } catch (_) {}
+
+  CURRENT_DATA = data;
+  populateForms(CURRENT_DATA);
+  markSaved();
+}
+
+// ── Populate all form fields from data object ───────────────────────────────
+function populateForms(d) {
+  renderProjectCards(d.projects || []);
+  renderExperienceCards(d.experience || []);
+}
+
+// ── Cloudinary upload helper (with progress bar) ────────────────────────────
+async function uploadImage(file, progressEl, barEl, previewEl, folder) {
+  progressEl.style.display = 'block';
+  barEl.style.width = '0%';
+  try {
+    const { url } = await window.CloudinaryUpload(file, folder, (pct) => {
+      barEl.style.width = pct + '%';
+    });
+    progressEl.style.display = 'none';
+    if (previewEl) { previewEl.src = url; previewEl.style.display = 'block'; }
+    return url;
+  } catch (err) {
+    progressEl.style.display = 'none';
+    toast('Upload failed: ' + err.message, 'error');
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PROJECTS
+// ═══════════════════════════════════════════════════════════════════
+function renderProjectCards(projects) {
+  const list = $('projects-list');
+  list.innerHTML = '';
+  projects.forEach((proj, idx) => {
+    const card = document.createElement('div');
+    card.className = 'admin-card';
+    card.dataset.idx = idx;
+    card.innerHTML = `
+      <div class="admin-card-header">
+        <h4>#${proj.id || idx+1} ${proj.title || 'Untitled Project'}</h4>
+        <button class="admin-card-toggle" data-card="${idx}"><i class="fas fa-chevron-down"></i></button>
+        <button class="delete-btn" data-del-proj="${idx}"><i class="fas fa-trash"></i></button>
+      </div>
+      <div class="admin-card-body" id="proj-body-${idx}">
+        <!-- Cover image -->
+        <div class="field-group">
+          <label>Cover Image</label>
+          <div class="img-upload-wrap">
+            <div class="img-upload-box">
+              <input type="file" id="proj-img-file-${idx}" accept="image/*">
+              <div class="upload-icon"><i class="fas fa-image"></i></div>
+              <p>Click to upload cover image</p>
+            </div>
+            <div class="upload-progress" id="proj-img-prog-${idx}"><div class="upload-progress-bar" id="proj-img-bar-${idx}"></div></div>
+            <img class="img-preview" id="proj-img-prev-${idx}" src="${proj.image || ''}" alt="" style="${proj.image ? 'display:block' : 'display:none'}">
+            <button type="button" class="btn btn-ghost btn-xs" id="proj-img-remove-${idx}" style="margin-top:8px; color:#f87171; display:${proj.image ? 'inline-flex' : 'none'}; align-items:center; gap:6px;">
+              <i class="fas fa-times-circle"></i> Remove Image
+            </button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group"><label>Title</label>
+            <input type="text" id="proj-title-${idx}" value="${escHtml(proj.title||'')}"></div>
+          <div class="field-group"><label>Category</label>
+            <select id="proj-cat-${idx}">
+              ${['fullstack','webapp','cybersecurity','systems','desktop'].map(c=>
+                `<option value="${c}" ${proj.category===c?'selected':''}>${c}</option>`).join('')}
+            </select></div>
+        </div>
+        <div class="field-group"><label>Category Label</label>
+          <input type="text" id="proj-catlabel-${idx}" value="${escHtml(proj.categoryLabel||'')}"></div>
+        <div class="field-group"><label>Description</label>
+          <textarea id="proj-desc-${idx}" rows="2">${escHtml(proj.description||'')}</textarea></div>
+        <div class="field-row">
+          <div class="field-group"><label>Live URL</label>
+            <input type="url" id="proj-live-${idx}" value="${escHtml(proj.liveUrl||'')}"></div>
+          <div class="field-group"><label>GitHub URL</label>
+            <input type="url" id="proj-github-${idx}" value="${escHtml(proj.githubUrl||'')}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><label>Tech Stack (comma-separated)</label>
+            <input type="text" id="proj-tech-${idx}" value="${escHtml((proj.tech||[]).join(', '))}"></div>
+          <div class="field-group"><label>Year</label>
+            <input type="text" id="proj-year-${idx}" value="${escHtml(proj.year||'2025')}"></div>
+        </div>
+        <div class="field-group"><label>Key Highlights (one per line)</label>
+          <textarea id="proj-highlights-${idx}" rows="3">${escHtml((proj.highlights||[]).join('\n'))}</textarea></div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;margin-top:4px;">
+          <input type="checkbox" id="proj-featured-${idx}" ${proj.featured?'checked':''}> Featured project
+        </label>
+      </div>`;
+    list.appendChild(card);
+
+    // Toggle collapse
+    card.querySelector(`[data-card="${idx}"]`).addEventListener('click', () => {
+      const body = $(`proj-body-${idx}`);
+      body.classList.toggle('collapsed');
+    });
+
+    // Remove image button
+    $(`proj-img-remove-${idx}`).addEventListener('click', async () => {
+      const projId = CURRENT_DATA.projects[idx].id;
+
+      // Clear from live data
+      CURRENT_DATA.projects[idx].image = '';
+
+      // Clear from localStorage image cache
+      try {
+        const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+        delete imgCache[projId];
+        localStorage.setItem('proj_img_cache', JSON.stringify(imgCache));
+      } catch(_) {}
+
+      // Hide preview and button
+      $(`proj-img-prev-${idx}`).style.display = 'none';
+      $(`proj-img-prev-${idx}`).src = '';
+      $(`proj-img-remove-${idx}`).style.display = 'none';
+
+      // Auto-save
+      try {
+        markSaving();
+        collectProjectForms();
+        localStorage.setItem('portfolio_data', JSON.stringify(CURRENT_DATA));
+        await window.FirebaseDB.dbSave(CURRENT_DATA);
+        markSaved();
+        toast('Image removed & saved ✓');
+      } catch(err) {
+        markUnsaved();
+        toast('Image removed locally. Firebase sync failed.', 'error');
+      }
+    });
+
+    // Image upload for this project
+    $(`proj-img-file-${idx}`).addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = await uploadImage(
+        file,
+        $(`proj-img-prog-${idx}`), $(`proj-img-bar-${idx}`),
+        $(`proj-img-prev-${idx}`),
+        'portfolio/projects'
+      );
+      if (url) {
+        // 1. Store URL on the live data object
+        CURRENT_DATA.projects[idx].image = url;
+
+        // 2. Save to localStorage image cache IMMEDIATELY (reliable, no permissions needed)
+        const projId = CURRENT_DATA.projects[idx].id;
+        const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+        imgCache[projId] = url;
+        localStorage.setItem('proj_img_cache', JSON.stringify(imgCache));
+
+        // 3. Also save full data to localStorage so the preview survives a refresh
+        collectProjectForms();
+        localStorage.setItem('portfolio_data', JSON.stringify(CURRENT_DATA));
+
+        // 4. Try to save to Firestore
+        try {
+          markSaving();
+          await window.FirebaseDB.dbSave(CURRENT_DATA);
+          markSaved();
+          toast(`Cover image uploaded & saved to Firebase ✓`);
+        } catch(err) {
+          markUnsaved();
+          // Image is already in localStorage — it will still show after refresh
+          toast('Saved locally. Firebase sync failed (check Firestore rules).', 'error');
+          console.error('Firestore save error:', err);
+        }
+
+        // Show the remove button now that there's an image
+        $(`proj-img-remove-${idx}`).style.display = 'inline-flex';
+      }
+    });
+
+    // Listen for field changes
+    [`proj-title-${idx}`,`proj-desc-${idx}`,`proj-live-${idx}`,`proj-github-${idx}`,
+     `proj-tech-${idx}`,`proj-year-${idx}`,`proj-highlights-${idx}`,`proj-catlabel-${idx}`,
+     `proj-cat-${idx}`,`proj-featured-${idx}`].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => markUnsaved());
+    });
+  });
+
+  // Delete
+  list.querySelectorAll('[data-del-proj]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = +btn.dataset.delProj;
+      CURRENT_DATA.projects.splice(idx, 1);
+      renderProjectCards(CURRENT_DATA.projects);
+      markUnsaved();
+    });
+  });
+}
+
+function collectProjectForms() {
+  if (!CURRENT_DATA?.projects) return;
+  CURRENT_DATA.projects = CURRENT_DATA.projects.map((proj, idx) => {
+    // Use the live data entry (not the stale closure snapshot) so uploaded image URLs are preserved
+    const live = CURRENT_DATA.projects[idx];
+    return {
+      ...live,
+      title:         $(`proj-title-${idx}`)?.value.trim()     || live.title,
+      category:      $(`proj-cat-${idx}`)?.value              || live.category,
+      categoryLabel: $(`proj-catlabel-${idx}`)?.value.trim()  || live.categoryLabel,
+      description:   $(`proj-desc-${idx}`)?.value.trim()      || live.description,
+      liveUrl:       $(`proj-live-${idx}`)?.value.trim()      || live.liveUrl,
+      githubUrl:     $(`proj-github-${idx}`)?.value.trim()    || live.githubUrl,
+      tech:          ($(`proj-tech-${idx}`)?.value || '').split(',').map(t=>t.trim()).filter(Boolean),
+      year:          $(`proj-year-${idx}`)?.value.trim()      || live.year,
+      highlights:    ($(`proj-highlights-${idx}`)?.value || '').split('\n').map(h=>h.trim()).filter(Boolean),
+      featured:      $(`proj-featured-${idx}`)?.checked ?? live.featured,
+      // image is already set directly on CURRENT_DATA.projects[idx] by the upload handler
+      image:         live.image || '',
+    };
+  });
+}
+
+$('addProjectBtn').addEventListener('click', () => {
+  CURRENT_DATA.projects = CURRENT_DATA.projects || [];
+  CURRENT_DATA.projects.push({
+    id: Date.now(), title: 'New Project', category: 'webapp', categoryLabel: 'Web App',
+    description: '', image: '', icon: 'fas fa-code', featured: false,
+    liveUrl: '', githubUrl: '', tech: [], highlights: [], year: new Date().getFullYear().toString()
+  });
+  renderProjectCards(CURRENT_DATA.projects);
+  markUnsaved();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  EXPERIENCE
+// ═══════════════════════════════════════════════════════════════════
+function renderExperienceCards(exp) {
+  const list = $('experience-list');
+  list.innerHTML = '';
+  exp.forEach((e, idx) => {
+    const card = document.createElement('div');
+    card.className = 'admin-card';
+    card.innerHTML = `
+      <div class="admin-card-header">
+        <h4>${escHtml(e.title || 'Untitled')}</h4>
+        <button class="admin-card-toggle" data-exp="${idx}"><i class="fas fa-chevron-down"></i></button>
+        <button class="delete-btn" data-del-exp="${idx}"><i class="fas fa-trash"></i></button>
+      </div>
+      <div class="admin-card-body" id="exp-body-${idx}">
+        <div class="field-row">
+          <div class="field-group"><label>Title / Role</label>
+            <input type="text" id="exp-title-${idx}" value="${escHtml(e.title||'')}"></div>
+          <div class="field-group"><label>Organisation</label>
+            <input type="text" id="exp-org-${idx}" value="${escHtml(e.organization||'')}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><label>Type</label>
+            <select id="exp-type-${idx}">
+              ${['Education','Work','Internship','Project Work','Volunteer'].map(t=>
+                `<option value="${t}" ${e.type===t?'selected':''}>${t}</option>`).join('')}
+            </select></div>
+          <div class="field-group"><label>Period</label>
+            <input type="text" id="exp-period-${idx}" value="${escHtml(e.period||'')}"></div>
+        </div>
+        <div class="field-group"><label>Location</label>
+          <input type="text" id="exp-loc-${idx}" value="${escHtml(e.location||'')}"></div>
+        <div class="field-group"><label>Description</label>
+          <textarea id="exp-desc-${idx}" rows="2">${escHtml(e.description||'')}</textarea></div>
+        <div class="field-group"><label>Highlights (one per line)</label>
+          <textarea id="exp-highlights-${idx}" rows="3">${escHtml((e.highlights||[]).join('\n'))}</textarea></div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;">
+          <input type="checkbox" id="exp-current-${idx}" ${e.current?'checked':''}> Currently active
+        </label>
+      </div>`;
+    list.appendChild(card);
+
+    card.querySelector(`[data-exp="${idx}"]`).addEventListener('click', () => {
+      $(`exp-body-${idx}`).classList.toggle('collapsed');
+    });
+    [`exp-title-${idx}`,`exp-org-${idx}`,`exp-type-${idx}`,`exp-period-${idx}`,
+     `exp-loc-${idx}`,`exp-desc-${idx}`,`exp-highlights-${idx}`,`exp-current-${idx}`].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => markUnsaved());
+    });
+  });
+
+  list.querySelectorAll('[data-del-exp]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      CURRENT_DATA.experience.splice(+btn.dataset.delExp, 1);
+      renderExperienceCards(CURRENT_DATA.experience);
+      markUnsaved();
+    });
+  });
+}
+
+function collectExperienceForms() {
+  if (!CURRENT_DATA?.experience) return;
+  CURRENT_DATA.experience = CURRENT_DATA.experience.map((e, idx) => ({
+    ...e,
+    title:        $(`exp-title-${idx}`)?.value.trim()  || e.title,
+    organization: $(`exp-org-${idx}`)?.value.trim()    || e.organization,
+    type:         $(`exp-type-${idx}`)?.value           || e.type,
+    period:       $(`exp-period-${idx}`)?.value.trim() || e.period,
+    location:     $(`exp-loc-${idx}`)?.value.trim()    || e.location,
+    description:  $(`exp-desc-${idx}`)?.value.trim()   || e.description,
+    highlights:   ($(`exp-highlights-${idx}`)?.value||'').split('\n').map(h=>h.trim()).filter(Boolean),
+    current:      $(`exp-current-${idx}`)?.checked ?? e.current,
+  }));
+}
+
+$('addExpBtn').addEventListener('click', () => {
+  CURRENT_DATA.experience = CURRENT_DATA.experience || [];
+  CURRENT_DATA.experience.push({
+    id: Date.now(), title: '', organization: '', type: 'Work',
+    period: '', location: '', description: '', highlights: [], current: false
+  });
+  renderExperienceCards(CURRENT_DATA.experience);
+  markUnsaved();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  SAVE TO FIREBASE
+// ═══════════════════════════════════════════════════════════════════
+async function saveAll() {
+  // Collect only projects and experience forms
+  collectProjectForms();
+  collectExperienceForms();
+
+  markSaving();
+  try {
+    await window.FirebaseDB.dbSave(CURRENT_DATA);
+    // Also keep localStorage in sync as cache
+    localStorage.setItem('portfolio_data', JSON.stringify(CURRENT_DATA));
+    markSaved();
+    toast('Saved to Firebase ✓');
+  } catch(err) {
+    $('syncBadge').textContent = 'Error';
+    $('syncBadge').className = 'sync-badge unsynced';
+    
+    console.error('Firestore save failed:', err);
+    if (err.message.includes('permission') || err.message.includes('Permission') || err.code === 'permission-denied') {
+      toast('Save failed: Permission denied', 'error');
+      alert("FIRESTORE PERMISSION DENIED:\nYour Firebase project's Firestore security rules are blocking writes.\n\nPlease fix this:\n1. Open your Firebase Console (console.firebase.google.com)\n2. Navigate to: Firestore Database > Rules\n3. Set rules to allow reads and writes, e.g.:\n\nmatch /portfolio/{docId} {\n  allow read, write: if true;\n}\n\n4. Click 'Publish'.");
+    } else {
+      toast('Save failed: ' + err.message, 'error');
+    }
+  }
+}
+
+$('saveAllBtn').addEventListener('click', saveAll);
+$('forceSaveBtn').addEventListener('click', saveAll);
+
+// ── Settings: seed, reload, change password ──────────────────────────────────
+$('seedBtn').addEventListener('click', async () => {
+  const seeded = await window.FirebaseDB.dbSeedIfEmpty();
+  toast(seeded ? 'Defaults seeded to Firebase ✓' : 'Already has data — seed skipped');
+});
+
+$('reloadFromFbBtn').addEventListener('click', async () => {
+  const data = await window.FirebaseDB.dbLoad();
+  if (data) {
+    CURRENT_DATA = data;
+    populateForms(CURRENT_DATA);
+    markSaved();
+    toast('Reloaded from Firebase ✓');
+  } else {
+    toast('No Firebase data found', 'error');
+  }
+});
+
+// Password is managed via js/config.js (environment file)
+
+// ═══════════════════════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.dash-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    $('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── Utility ────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+</script>
+</body>
+</html>

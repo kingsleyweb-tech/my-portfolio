@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Allow read/write access to all portfolio collections
+    match /profile/{docId}             { allow read, write: if true; }
+    match /skills/{docId}              { allow read, write: if true; }
+    match /projects/{docId}            { allow read, write: if true; }
+    match /experience/{docId}          { allow read, write: if true; }
+    match /engineeringProjects/{docId} { allow read, write: if true; }
+    match /aiWorkflow/{docId}          { allow read, write: if true; }
+    match /settings/{docId}            { allow read, write: if true; }
+
+    // Deny other paths by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

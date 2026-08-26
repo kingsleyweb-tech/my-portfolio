@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src":  "/admin/(.*)",
+      "dest": "/admin/$1"
+    },
+    {
+      "src":  "/projects",
+      "dest": "/projects.html"
+    },
+    {
+      "src":  "/(.*\\.html)",
+      "dest": "/$1"
+    },
+    {
+      "src":  "/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src":  "/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src":  "/(.*\\.(jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf))",
+      "dest": "/$1"
+    },
+    {
+      "src":  "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/js/config.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

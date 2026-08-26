@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Credentials — NEVER commit these
+.env
+# js/config.js is intentionally committed — Firebase client keys are browser-visible by design.
+# Do NOT put private server-side secrets in config.js.
+
+# Firebase local cache
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.swp

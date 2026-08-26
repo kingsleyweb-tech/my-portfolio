@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV — Kingsley Anaab</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <style>
+    .cv-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      margin-top: 40px;
+    }
+    .cv-section {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .cv-section h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .cv-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cv-list li {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: .92rem;
+      color: var(--text-2);
+    }
+    .cv-list li strong {
+      color: var(--text);
+    }
+    @media (max-width: 480px) {
+      .cv-content {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar scrolled">
+  <div class="container nav-inner">
+    <a href="index.html#home" class="nav-logo">KA</a>
+
+    <div class="nav-pills">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+
+    <div class="nav-right">
+      <a href="index.html#contact" class="btn btn-primary btn-xs">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="padding: 120px 24px 80px; max-width: 800px;">
+  <h1 class="section-heading">Curriculum Vitae</h1>
+  <p class="section-sub">Kingsley Anaab — Information Technology Student &amp; Web Developer</p>
+  
+  <div style="margin: 28px 0; display:flex; gap:10px;">
+    <button onclick="window.print()" class="btn btn-primary btn-sm">
+      <i class="fas fa-print"></i> Print CV
+    </button>
+    <a href="index.html#contact" class="btn btn-ghost btn-sm">Contact Me</a>
+  </div>
+  
+  <div class="cv-content">
+    <h2 style="font-size: 1.6rem; margin-bottom: 6px;">Kingsley Anaab</h2>
+    <p style="color:var(--text-3); font-size:.85rem; margin-bottom: 24px;">Information Technology Student · Burma Camp, Ghana</p>
+    
+    <div class="cv-section" style="border-top:none; padding-top:0; margin-top:0;">
+      <h2>Personal Information</h2>
+      <ul class="cv-list">
+        <li><strong>Email:</strong> kingsleyanaab604@gmail.com</li>
+        <li><strong>Phone:</strong> +233 501 901 401</li>
+        <li><strong>GitHub:</strong> github.com/kingsleyweb-tech</li>
+      </ul>
+    </div>
+    
+    <div class="cv-section">
+      <h2>Education</h2>
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+        <strong>BSc in Information Technology</strong>
+        <span style="color:var(--text-3); font-size:.85rem;">2024 - Present</span>
+      </div>
+      <p style="color:var(--text-2); font-size:.9rem;">Knutsford University College · Level 200 (Year 2)</p>
+    </div>
+    
+    <div class="cv-section">
+      <h2>Skills &amp; Technologies</h2>
+      <ul class="cv-list">
+        <li><strong>Languages:</strong> HTML5, CSS3, JavaScript, PHP, SQL</li>
+        <li><strong>Frameworks &amp; Systems:</strong> React, Vite, Node.js, Express, Socket.io, Firebase, MongoDB</li>
+        <li><strong>Tools:</strong> Git, GitHub, VS Code, Postman, Electron, Laragon</li>
+      </ul>
+    </div>
+    
+    <div class="cv-section">
+      <h2>Featured Projects</h2>
+      <ul class="cv-list">
+        <li>
+          <div>
+            <strong>Vendora</strong>
+            <p style="font-size:.85rem; margin-top:2px;">Campus-focused marketplace platform with vendor dashboards, product catalogs, and subscription systems.</p>
+          </div>
+          <span style="color:var(--text-3); font-size:.85rem;">PHP &amp; MySQL</span>
+        </li>
+        <li style="margin-top:10px;">
+          <div>
+            <strong>RealTimeDocs</strong>
+            <p style="font-size:.85rem; margin-top:2px;">Collaborative real-time document editing suite featuring live updates, document persistence, and user auth.</p>
+          </div>
+          <span style="color:var(--text-3); font-size:.85rem;">Socket.io &amp; MERN</span>
+        </li>
+        <li style="margin-top:10px;">
+          <div>
+            <strong>Cyber News &amp; Threat Monitor</strong>
+            <p style="font-size:.85rem; margin-top:2px;">Threat intelligence platform aggregate feed reader and security-centric data visualization dashboard.</p>
+          </div>
+          <span style="color:var(--text-3); font-size:.85rem;">React &amp; TypeScript</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simple theme persistence for CV page
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Projects — Kingsley Anaab</title>
+  <meta name="description" content="All projects by Kingsley Anaab — an IT student and web developer actively building real-world applications across web, systems, and cybersecurity.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <style>
+    .page-hero {
+      padding: 140px 0 60px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero .label { margin-bottom: 12px; display: block; }
+    .page-hero h1 { margin-bottom: 16px; }
+    .page-hero p { max-width: 540px; color: var(--text-2); line-height: 1.75; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html#home" class="nav-logo">KA</a>
+
+    <div class="nav-pills" id="navPills">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="projects.html" class="active">Projects</a>
+      <a href="index.html#ai-workflow">AI Workflow</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ PAGE HERO ═══════════════ -->
+<section class="page-hero">
+  <div class="container">
+    <span class="label">Portfolio</span>
+    <h1 class="section-heading">All Projects</h1>
+    <p>Every project I've built — from featured full-stack apps to engineering deep-dives. Each one taught me something new and helped me grow as a developer.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ PROJECTS ═══════════════ -->
+<section class="section" style="padding-top: 48px;">
+  <div class="container">
+
+    <!-- Filters -->
+    <div class="proj-filters reveal" id="proj-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="fullstack">Full Stack</button>
+      <button class="filter-btn" data-filter="webapp">Web Apps</button>
+      <button class="filter-btn" data-filter="cybersecurity">Cybersecurity</button>
+      <button class="filter-btn" data-filter="systems">Systems</button>
+      <button class="filter-btn" data-filter="desktop">Desktop</button>
+    </div>
+
+    <!-- Featured projects -->
+    <div id="featured-container"></div>
+
+    <!-- All other projects grid -->
+    <div class="proj-grid" id="proj-grid"></div>
+
+    <!-- Engineering projects -->
+    <div class="engineering-wrap" id="engineering-wrap" style="margin-top: 72px;">
+      <div class="section-header" style="margin-bottom:32px;">
+        <span class="label">Engineering</span>
+        <h2 class="section-heading" style="font-size:clamp(1.5rem,3vw,2rem);">Deep-dive engineering projects</h2>
+        <p class="section-sub">
+          Projects that go deeper into CS fundamentals — exploring how things work under the hood,
+          not just building on top of frameworks.
+        </p>
+      </div>
+      <div class="eng-grid" id="eng-grid"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html#home" class="nav-logo">KA</a>
+        <p>IT student &amp; web developer. Still learning, actively building, continuously growing.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="index.html#home">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#skills">Skills</a></li>
+          <li><a href="index.html#experience">Experience</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-contact-list">
+          <li><a href="mailto:kingsleyanaab604@gmail.com"><i class="fas fa-envelope"></i> kingsleyanaab604@gmail.com</a></li>
+          <li><a href="https://wa.me/233501901401" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> 0501901401</a></li>
+          <li><a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener"><i class="fab fa-github"></i> @kingsleyweb-tech</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Kingsley Anaab. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="js/config.js"></script>
+<script src="js/firebase-db.js"></script>
+<script src="js/portfolio-data.js"></script>
+<script>
+  // ══════════════════════════════════════════════
+  // THEME
+  // ══════════════════════════════════════════════
+  (function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+  })();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const get = () => localStorage.getItem('theme') || 'dark';
+    const set = (t) => {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('theme', t);
+      themeIcon.className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    };
+    set(get());
+    themeBtn.addEventListener('click', () => set(get() === 'dark' ? 'light' : 'dark'));
+  });
+
+  // ══════════════════════════════════════════════
+  // NAV
+  // ══════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    const navbar   = document.getElementById('navbar');
+    const toggle   = document.getElementById('navToggle');
+    const pills    = document.getElementById('navPills');
+    const links    = pills.querySelectorAll('a');
+
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 24), { passive: true });
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.classList.toggle('open');
+      pills.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    links.forEach(a => a.addEventListener('click', () => {
+      toggle.classList.remove('open');
+      pills.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }));
+  });
+
+  // ══════════════════════════════════════════════
+  // RENDER
+  // ══════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Load from Firestore → localStorage → defaults
+    let data = null;
+    if (window.FirebaseDB) { try { data = await window.FirebaseDB.dbLoad(); } catch(_) {} }
+    if (!data) { try { const ls = localStorage.getItem('portfolio_data'); if (ls) data = JSON.parse(ls); } catch(_) {} }
+    if (!data) data = window.DEFAULT_PORTFOLIO_DATA;
+
+    // Supplement project images from localStorage cache (in case Firestore didn't save them)
+    try {
+      const imgCache = JSON.parse(localStorage.getItem('proj_img_cache') || '{}');
+      if (data.projects && Object.keys(imgCache).length > 0) {
+        data.projects = data.projects.map(p => ({ ...p, image: p.image || imgCache[p.id] || '' }));
+      }
+    } catch (_) {}
+
+    window.PORTFOLIO = data;
+
+    const { projects, engineeringProjects } = data;
+
+    const featuredEl = document.getElementById('featured-container');
+    const gridEl     = document.getElementById('proj-grid');
+    const engEl      = document.getElementById('eng-grid');
+
+    // Featured
+    const featured = projects.filter(p => p.featured);
+    featuredEl.innerHTML = featured.map((p, idx) => {
+      const order1 = idx % 2 === 0 ? '' : 'style="order:2;"';
+      const order2 = idx % 2 === 0 ? '' : 'style="order:1;"';
+      const tech = (p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
+      const img  = p.image
+        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+        : `<div class="feat-placeholder"><i class="${p.icon || 'fas fa-laptop-code'}"></i></div>`;
+      const demo   = p.liveUrl   ? `<a href="${p.liveUrl}"   target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : '';
+      const github = p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="fab fa-github"></i> GitHub</a>` : '';
+      return `
+        <div class="featured-proj reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+          <div class="featured-proj-img" ${order1}>${img}<span class="feat-badge">Featured</span></div>
+          <div class="featured-proj-body" ${order2}>
+            <div class="featured-proj-cat">${p.categoryLabel || ''}</div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div class="proj-tech-row">${tech}</div>
+            <div class="proj-actions">
+              ${demo}${github}
+              <button class="btn btn-ghost btn-sm modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Non-featured grid
+    const rest = projects.filter(p => !p.featured);
+    gridEl.innerHTML = rest.map(p => {
+      const tech = (p.tech || []).slice(0, 3).map(t => `<span class="tech-tag">${t}</span>`).join('');
+      const img  = p.image
+        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+        : `<div class="proj-card-placeholder"><i class="${p.icon || 'fas fa-code'}"></i></div>`;
+      return `
+        <div class="proj-card reveal" data-filter-cat="${p.category}" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+          <div class="proj-card-img">${img}</div>
+          <div class="proj-card-body">
+            <div class="proj-card-cat">${p.categoryLabel || ''}</div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div class="proj-card-foot">
+              <div class="proj-tech-row" style="margin-bottom:0;">${tech}</div>
+              <div class="proj-arrow"><i class="fas fa-arrow-right"></i></div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Engineering
+    const engProjList = engineeringProjects && engineeringProjects.length > 0
+      ? engineeringProjects
+      : (window.DEFAULT_PORTFOLIO_DATA ? window.DEFAULT_PORTFOLIO_DATA.engineeringProjects : []);
+
+    engEl.innerHTML = engProjList.map(p => {
+      const concepts = (p.concepts || []).map(c => `<span class="eng-concept">${c}</span>`).join('');
+      return `
+        <div class="eng-card reveal" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title} details">
+          <div class="eng-icon"><i class="${p.icon || 'fas fa-cogs'}"></i></div>
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+          <div class="eng-concepts">${concepts}</div>
+          <div class="proj-actions">
+            <button class="btn btn-ghost btn-xs modal-trigger" data-id="${p.id}"><i class="fas fa-info-circle"></i> Details</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    // ── Filters ──
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('#featured-container .featured-proj').forEach(el =>
+          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
+        document.querySelectorAll('#proj-grid .proj-card').forEach(el =>
+          el.classList.toggle('hidden', f !== 'all' && el.dataset.filterCat !== f));
+      });
+    });
+
+    // ── Scroll reveals ──
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    // ── Scroll to top ──
+    const topBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => topBtn.classList.toggle('show', scrollY > 500), { passive: true });
+    topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ── Modal ──
+    const overlay      = document.getElementById('modalOverlay');
+    const modalClose   = document.getElementById('modalClose');
+    const modalContent = document.getElementById('modalContent');
+    let prevActive = null;
+
+    const closeModal = () => {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (prevActive) prevActive.focus();
+    };
+
+    const openModal = (id) => {
+      const all = [...projects, ...(engineeringProjects || [])];
+      const proj = all.find(p => String(p.id) === String(id));
+      if (!proj) return;
+      prevActive = document.activeElement;
+
+      const tech = (proj.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
+      const highlights = proj.highlights ? `
+        <div class="modal-features">
+          <h4>Key Features</h4>
+          <ul>${proj.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
+        </div>` : '';
+      const img    = proj.image ? `<img src="${proj.image}" alt="${proj.title}" class="modal-real-img">` : `<div class="modal-placeholder-img"><i class="${proj.icon || 'fas fa-code'}"></i></div>`;
+      const demo   = proj.liveUrl   ? `<a href="${proj.liveUrl}"   target="_blank" rel="noopener" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : '';
+      const github = proj.githubUrl ? `<a href="${proj.githubUrl}" target="_blank" rel="noopener" class="btn btn-ghost"><i class="fab fa-github"></i> GitHub</a>` : '';
+
+      modalContent.innerHTML = `
+        ${img}
+        <div class="modal-body">
+          <div class="modal-cat">${proj.categoryLabel || 'Project'}</div>
+          <h2 id="modalTitle">${proj.title}</h2>
+          <p>${proj.description}</p>
+          <div class="modal-tech-row">${tech}</div>
+          ${highlights}
+          <div class="modal-actions">${demo}${github}
+            <button class="btn btn-ghost" id="modalCloseAction"><i class="fas fa-times"></i> Close</button>
+          </div>
+        </div>`;
+
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => modalClose.focus(), 50);
+      document.getElementById('modalCloseAction').addEventListener('click', closeModal);
+    };
+
+    document.addEventListener('click', e => {
+      const trigger = e.target.closest('.modal-trigger');
+      const card    = e.target.closest('.proj-card, .featured-proj, .eng-card');
+      if (trigger)                                   { e.stopPropagation(); openModal(trigger.dataset.id); }
+      else if (card && !e.target.closest('a,button')) openModal(card.dataset.id);
+    });
+    document.addEventListener('keydown', e => {
+      const card = e.target.closest('.proj-card, .featured-proj, .eng-card');
+      if (card && (e.key === 'Enter' || e.key === ' ') && !e.target.closest('a,button')) {
+        e.preventDefault(); openModal(card.dataset.id);
+      }
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+    });
+
+    modalClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  });
+</script>
+</body>
+</html>

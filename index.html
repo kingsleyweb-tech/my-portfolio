@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kingsley Anaab — IT Student & Web Developer</title>
+  <meta name="description" content="Kingsley Anaab is an Information Technology student and web developer actively learning, building real-world projects, and growing across web development, backend systems, and software engineering.">
+  <meta name="author" content="Kingsley Anaab">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="#home" class="nav-logo">KA</a>
+
+    <div class="nav-pills" id="navPills">
+      <a href="#home"       class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#ai-workflow">AI Workflow</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle light/dark mode">
+        <i class="fas fa-moon" id="themeIcon"></i>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero section" id="home">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- Left -->
+      <div class="hero-left">
+        <div class="hero-meta reveal">
+          <div class="status-badge">
+            <span class="status-dot"></span>
+            <span id="h-availability">Open to internships, part-time &amp; remote learning opportunities</span>
+          </div>
+          <span class="location-tag"><i class="fas fa-map-marker-alt"></i> <span id="h-location">Ghana 🇬🇭</span></span>
+        </div>
+
+        <!-- Mobile only: small avatar next to name -->
+        <div class="hero-brand-row reveal rd1">
+          <div class="hero-avatar-circle clickable-avatar mobile-avatar" id="heroAvatar" tabindex="0" role="button" aria-label="View profile photo">
+            <img src="kesh.jpg" alt="Kingsley Anaab" id="h-photo" loading="eager">
+          </div>
+          <div>
+            <h1 class="hero-name" id="h-name">Kingsley<br>Anaab</h1>
+            <p class="hero-role" id="h-role">IT Student &amp; Web Developer.</p>
+          </div>
+        </div>
+
+        <!-- Desktop only: name without avatar (avatar is on the right) -->
+        <div class="hero-name-only">
+          <h1 class="hero-name" id="h-name-desk">Kingsley<br>Anaab</h1>
+          <p class="hero-role" id="h-role-desk">IT Student &amp; Web Developer.</p>
+        </div>
+
+        <p class="hero-desc reveal rd2" id="h-bio">
+          I'm an Information Technology student actively learning, experimenting with new technologies, and
+          building real-world projects to grow my skills. I'm still in the process of developing across
+          different areas — and I improve through practice and building.
+        </p>
+
+        <div class="hero-stats reveal rd3" id="h-stats">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="hero-actions reveal rd3">
+          <a href="#projects" class="btn btn-primary"><i class="fas fa-folder-open"></i> View Projects</a>
+          <a href="#contact"  class="btn btn-ghost"><i class="fas fa-paper-plane"></i> Contact Me</a>
+          <a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener" class="btn btn-ghost">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+        </div>
+
+        <div class="hero-tags reveal rd4" id="h-tags">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Right: big circular photo (desktop only) -->
+      <div class="hero-right reveal rd2">
+        <div class="hero-photo-card" id="heroAvatarDesk" tabindex="0" role="button" aria-label="View profile photo">
+          <div class="hero-photo-frame">
+            <img src="kesh.jpg" alt="Kingsley Anaab" id="h-photo-desk" loading="eager">
+          </div>
+          <div class="currently-card">
+            Currently learning
+            <strong id="h-currently">React &amp; TypeScript</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section class="about section section--alt" id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-text">
+        <span class="label reveal">About Me</span>
+        <div class="learning-badge reveal rd1">
+          <i class="fas fa-seedling"></i> Still learning &amp; growing
+        </div>
+        <h2 class="reveal rd1" id="a-heading">Developer who learns<br>by building real things</h2>
+        <p class="reveal rd2" id="a-bio1">
+          I'm an Information Technology student at Knutsford University College who enjoys experimenting
+          with new technologies, building practical applications, and continuously developing technical skills.
+          I'm still in the process of growing — some areas are things I'm actively learning and improving in.
+        </p>
+        <p class="reveal rd2" id="a-bio2">
+          Rather than focusing on theory alone, I prefer to learn by building real-world projects — taking
+          an idea, understanding how the pieces fit together, and turning it into a working application.
+          I don't have years of professional experience, but I'm continuously building to get there.
+        </p>
+
+        <div class="about-interests reveal rd3" id="a-interests">
+          <span class="interest-pill">Web Development</span>
+          <span class="interest-pill">Software Development</span>
+          <span class="interest-pill">Cybersecurity</span>
+          <span class="interest-pill">Networking</span>
+          <span class="interest-pill">Databases &amp; APIs</span>
+          <span class="interest-pill">System Design</span>
+          <span class="interest-pill">Emerging Tech</span>
+        </div>
+
+        <div class="about-details-row reveal rd3">
+          <div class="about-detail">
+            <h4>Education</h4>
+            <p>BSc Information Technology</p>
+          </div>
+          <div class="about-detail">
+            <h4>Institution</h4>
+            <p>Knutsford University</p>
+          </div>
+          <div class="about-detail">
+            <h4>Level</h4>
+            <p>Level 200 (Year 2)</p>
+          </div>
+          <div class="about-detail">
+            <h4>Approach</h4>
+            <p>Learn by Building</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SKILLS ═══════════════ -->
+<section class="skills-section section" id="skills">
+  <div class="container">
+    <div class="section-header">
+      <span class="label reveal">Technologies &amp; Tools</span>
+      <h2 class="section-heading reveal rd1">Skills I'm developing</h2>
+      <p class="section-sub reveal rd2">
+        Technologies I work with, listed with honest learning levels.
+        I'm continuously improving across all of these areas.
+      </p>
+    </div>
+
+    <!-- Skill categories rendered by JS -->
+    <div class="skills-cats reveal rd2" id="skills-container"></div>
+
+    <!-- Legend -->
+    <div class="skill-legend reveal rd3">
+      <span class="skill-legend-title">Level Guide:</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#4ade80"></span> Comfortable — I use this regularly</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#60a5fa"></span> Developing — Growing with practice</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span> Learning — Actively exploring</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#888"></span> Beginner — Just getting started</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#a78bfa"></span> Daily Driver — Use it every day</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE ═══════════════ -->
+<section class="experience-section section" id="experience">
+  <div class="container">
+    <div class="exp-number reveal">04</div>
+    <h2 class="exp-title reveal rd1">Experience</h2>
+
+    <div class="exp-timeline" id="exp-container">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROJECTS ═══════════════ -->
+<section class="projects-section section" id="projects">
+  <div class="container">
+    <div class="section-header">
+      <span class="label reveal">Portfolio</span>
+      <h2 class="section-heading reveal rd1">Projects I've built</h2>
+      <p class="section-sub reveal rd2">
+        Real applications built to solve problems, learn new technologies, and explore software engineering.
+        Each project taught me something new.
+      </p>
+    </div>
+
+    <!-- Featured projects rendered by JS -->
+    <div id="featured-container"></div>
+
+    <!-- View All Projects CTA -->
+    <div style="text-align: center; margin-top: 48px; margin-bottom: 56px;" class="reveal rd3">
+      <a href="projects.html" class="btn btn-primary"><i class="fas fa-th-list"></i> View All Projects</a>
+    </div>
+
+    <!-- Engineering projects -->
+    <div class="engineering-wrap" id="engineering-wrap">
+      <div class="section-header" style="margin-bottom:32px;">
+        <span class="label">Engineering</span>
+        <h2 class="section-heading" style="font-size:clamp(1.5rem,3vw,2rem);">Deep-dive engineering projects</h2>
+        <p class="section-sub">
+          Projects that go deeper into CS fundamentals. These go beyond building websites — they explore
+          how things work under the hood.
+        </p>
+      </div>
+      <div class="eng-grid" id="eng-grid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ AI WORKFLOW ═══════════════ -->
+<section class="ai-section section" id="ai-workflow">
+  <div class="container">
+    <div class="section-header">
+      <span class="label reveal">Developer Workflow</span>
+      <h2 class="section-heading reveal rd1">How I use AI in my work</h2>
+    </div>
+
+    <div class="ai-grid">
+      <div class="ai-left">
+        <p class="reveal" id="ai-intro">
+          I actively use AI tools as part of my learning and development workflow. AI helps me explore ideas,
+          understand unfamiliar concepts, and move faster — but I still make sure to understand what I'm
+          building and why.
+        </p>
+
+        <div class="ai-disclaimer reveal rd1">
+          <p id="ai-disclaimer">
+            ⚠️ I don't rely on AI to build everything for me. I use it as a learning and problem-solving
+            partner while continuously working to deepen my own understanding of the code I write.
+          </p>
+        </div>
+
+        <h4 style="margin: 20px 0 12px; font-size:.88rem; color:var(--text-2);">I use AI to:</h4>
+        <div class="ai-use-cases reveal rd2" id="ai-use-cases">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <div class="ai-tools-grid reveal rd2" id="ai-tools-grid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ GITHUB ═══════════════ -->
+<section class="github-section section" id="github">
+  <div class="container">
+    <div class="github-inner">
+      <div class="github-text">
+        <span class="label reveal">Open Source</span>
+        <h2 class="reveal rd1">Find my work<br>on GitHub</h2>
+        <p class="reveal rd2">
+          Most of my projects and experiments live on GitHub. Code is the best way to see
+          how I think and what I've been building. It's a work in progress — just like me.
+        </p>
+        <div class="github-handle reveal rd2">
+          <i class="fab fa-github"></i>
+          <span id="gh-handle">@kingsleyweb-tech</span>
+        </div>
+        <a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener"
+           class="btn btn-primary reveal rd3" id="gh-link">
+          <i class="fab fa-github"></i> Visit GitHub Profile
+        </a>
+      </div>
+
+      <div class="github-card reveal rd2">
+        <div class="github-card-header">
+          <div class="gc-dot"></div><div class="gc-dot"></div><div class="gc-dot"></div>
+        </div>
+        <div class="github-stats-grid">
+          <div class="github-stat-item">
+            <div class="gs-num">10+</div>
+            <div class="gs-lbl">Repositories</div>
+          </div>
+          <div class="github-stat-item">
+            <div class="gs-num">2025</div>
+            <div class="gs-lbl">Active Year</div>
+          </div>
+        </div>
+        <div class="github-repos">
+          <div class="github-repo"><span class="gr-name">vendora-marketplace</span><span class="gr-lang">PHP</span></div>
+          <div class="github-repo"><span class="gr-name">realtimedocs</span><span class="gr-lang">TypeScript</span></div>
+          <div class="github-repo"><span class="gr-name">kingscript-lang</span><span class="gr-lang">TypeScript</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section class="contact-section section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+
+      <div class="contact-left">
+        <span class="label reveal">Get In Touch</span>
+        <h2 class="reveal rd1">Let's Build<br>Something</h2>
+        <p class="reveal rd2">
+          Have an idea, project, or opportunity? I'm open to connecting, collaborating,
+          or just talking tech. I'm actively looking for opportunities to learn and grow.
+        </p>
+
+        <div class="contact-links reveal rd2">
+          <div class="contact-link-item">
+            <div class="contact-link-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div class="contact-link-label">Email</div>
+              <a href="mailto:kingsleyanaab604@gmail.com" class="contact-link-val" id="c-email">kingsleyanaab604@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-link-item">
+            <div class="contact-link-icon"><i class="fab fa-whatsapp"></i></div>
+            <div>
+              <div class="contact-link-label">WhatsApp / Phone</div>
+              <a href="https://wa.me/233501901401" target="_blank" rel="noopener" class="contact-link-val" id="c-phone">0501901401 / 0538212213</a>
+            </div>
+          </div>
+          <div class="contact-link-item">
+            <div class="contact-link-icon"><i class="fab fa-github"></i></div>
+            <div>
+              <div class="contact-link-label">GitHub</div>
+              <a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener" class="contact-link-val">github.com/kingsleyweb-tech</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-btns reveal rd3">
+          <a href="mailto:kingsleyanaab604@gmail.com" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Me</a>
+          <a href="https://wa.me/233501901401?text=Hello%20Kingsley%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect."
+             target="_blank" rel="noopener" class="btn btn-ghost"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-form-card reveal rd2">
+        <h3>Send a Message</h3>
+        <p>I'll get back to you via WhatsApp or email.</p>
+
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name <span aria-hidden="true">*</span></label>
+              <input type="text" id="name" required placeholder="Your name" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject <span aria-hidden="true">*</span></label>
+            <input type="text" id="subject" required placeholder="What's this about?">
+          </div>
+          <div class="form-group">
+            <label for="message">Message <span aria-hidden="true">*</span></label>
+            <textarea id="message" rows="4" required placeholder="Tell me about your project or idea..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">
+            <i class="fab fa-whatsapp"></i> Send via WhatsApp
+          </button>
+        </form>
+        <div id="formMsg" class="form-msg" role="alert" aria-live="polite"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="nav-logo">KA</a>
+        <p>IT student &amp; web developer. Still learning, actively building, continuously growing.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#ai-workflow">AI Workflow</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-contact-list">
+          <li><a href="mailto:kingsleyanaab604@gmail.com"><i class="fas fa-envelope"></i> kingsleyanaab604@gmail.com</a></li>
+          <li><a href="https://wa.me/233501901401" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> 0501901401</a></li>
+          <li><a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener"><i class="fab fa-github"></i> @kingsleyweb-tech</a></li>
+        </ul>
+        <div style="margin-top:16px;">
+          <a href="admin/index.html" style="font-size:.72rem; color:var(--text-3); opacity:.5;">Admin</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Kingsley Anaab. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="https://github.com/kingsleyweb-tech" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:kingsleyanaab604@gmail.com">Email</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK (compat build — no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<!-- Config & helpers -->
+<script src="js/config.js"></script>
+<script src="js/firebase-db.js"></script>
+
+<!-- Default data (fallback if Firestore unavailable) -->
+<script src="js/portfolio-data.js"></script>
+
+<!-- Main app script -->
+<script src="js/script.js"></script>
+</body>
+</html>
