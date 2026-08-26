@@ -18,7 +18,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     photo: "kesh.jpg",
     stats: [
       { value: "10+", label: "Projects Built" },
-      { value: "2024", label: "Started Coding" },
+      { value: "2025", label: "Started Coding" },
       { value: "BSc", label: "IT Student" }
     ],
     tags: ["IT Student", "Web Developer", "Learning Daily", "Building Real Things"],
@@ -113,7 +113,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       organization: "Knutsford University College",
       type: "Education",
       location: "East Legon, Ghana",
-      period: "2024 – Present",
+      period: "2025 – Present",
       current: true,
       description: "Pursuing a Bachelor of Science in Information Technology with a focus on software development, databases, networking, and computer science fundamentals.",
       highlights: [
