@@ -130,6 +130,13 @@
   <i class="fas fa-arrow-up"></i>
 </button>
 
+<!-- Image Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close"><i class="fas fa-times"></i></button>
+  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
   <div class="modal" id="modal">
@@ -426,6 +433,44 @@
       });
     });
   });
+</script>
+
+<script>
+// ── Image Lightbox ────────────────────────────────────────────────────────────
+(function() {
+  const lightbox    = document.getElementById('lightbox');
+  if (!lightbox) return;
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCap = document.getElementById('lightboxCaption');
+  const closeBtn    = document.getElementById('lightboxClose');
+
+  const openLightbox = (src, caption) => {
+    lightboxImg.src = src;
+    lightboxCap.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  const closeLightbox = () => {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { lightboxImg.src = ''; }, 300);
+  };
+
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest('.proj-card-img img, .featured-proj-img img');
+    if (!img) return;
+    e.stopPropagation();
+    const card = img.closest('[data-id]');
+    const caption = card ? (card.querySelector('h3')?.textContent || '') : '';
+    openLightbox(img.src, caption);
+  });
+
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  closeBtn.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+})();
 </script>
 </body>
 </html>

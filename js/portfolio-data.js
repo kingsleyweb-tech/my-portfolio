@@ -17,7 +17,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     currentlyBuilding: "React & TypeScript projects",
     photo: "kesh.jpg",
     stats: [
-      { value: "10+", label: "Projects Built" },
+      { value: "15+", label: "Projects Built" },
       { value: "2025", label: "Started Coding" },
       { value: "BSc", label: "IT Student" }
     ],

@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNav();
   initScrollEffects();
+  initLightbox();
   initFilters();
   initModal();
   initContactForm(localData.profile);
@@ -479,6 +480,50 @@ function initScrollEffects() {
 
   scrollTopBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// Image Lightbox
+function initLightbox() {
+  const lightbox    = document.getElementById('lightbox');
+  if (!lightbox) return;
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCap = document.getElementById('lightboxCaption');
+  const closeBtn    = document.getElementById('lightboxClose');
+
+  const openLightbox = (src, caption) => {
+    lightboxImg.src = src;
+    lightboxImg.alt = caption || '';
+    lightboxCap.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { lightboxImg.src = ''; }, 300);
+  };
+
+  // Click on project card images to open lightbox
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest('.proj-card-img img, .featured-proj-img img');
+    if (!img) return;
+    e.stopPropagation(); // don't open card modal
+    const card = img.closest('[data-id]');
+    const caption = card ? (card.querySelector('h3')?.textContent || '') : '';
+    openLightbox(img.src, caption);
+  });
+
+  // Close on overlay click
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  closeBtn.addEventListener('click', closeLightbox);
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
   });
 }
 

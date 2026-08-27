@@ -102,7 +102,7 @@
     .img-upload-box .upload-icon { font-size: 1.5rem; color: var(--text-3); margin-bottom: 8px; }
     .img-upload-box p { font-size: .78rem; color: var(--text-3); margin: 0; }
     .img-preview {
-      width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius);
+      width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius);
       border: 1px solid var(--border); display: none; margin-top: 10px;
     }
     .img-preview.round { border-radius: 50%; }
@@ -117,11 +117,31 @@
       background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-xl);
       padding: 20px; margin-bottom: 16px; position: relative;
     }
-    .admin-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .admin-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0; cursor: pointer; }
     .admin-card-header h4 { flex: 1; font-size: .95rem; font-weight: 700; }
-    .admin-card-toggle { cursor: pointer; color: var(--text-3); font-size: .8rem; background: none; border: none; }
-    .admin-card-body   { display: block; }
-    .admin-card-body.collapsed { display: none; }
+    .admin-card-toggle {
+      cursor: pointer; color: var(--text-3); font-size: .8rem;
+      background: none; border: none; transition: transform .25s ease;
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+    }
+    .admin-card-toggle.open { transform: rotate(180deg); }
+    .admin-card-body   { display: none; padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--border); }
+    .admin-card-body.open { display: block; }
+
+    /* Admin scroll-to-top */
+    .admin-scroll-top {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--admin-accent); color: #fff;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; box-shadow: 0 4px 16px rgba(99,102,241,.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+    .admin-scroll-top.show { opacity: 1; transform: translateY(0); pointer-events: all; }
 
     .add-btn {
       display: flex; align-items: center; gap: 8px;
@@ -253,6 +273,9 @@
 
   </div><!-- /dash-panels -->
 </div><!-- /dashWrap -->
+
+<!-- Scroll to top -->
+<button class="admin-scroll-top" id="adminScrollTop" title="Back to top"><i class="fas fa-chevron-up"></i></button>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -451,10 +474,10 @@ function renderProjectCards(projects) {
     card.className = 'admin-card';
     card.dataset.idx = idx;
     card.innerHTML = `
-      <div class="admin-card-header">
-        <h4>#${proj.id || idx+1} ${proj.title || 'Untitled Project'}</h4>
+      <div class="admin-card-header" data-card="${idx}">
+        <h4><i class="fas fa-folder" style="margin-right:8px;opacity:.4;"></i>#${proj.id || idx+1} — ${proj.title || 'Untitled Project'}</h4>
         <button class="admin-card-toggle" data-card="${idx}"><i class="fas fa-chevron-down"></i></button>
-        <button class="delete-btn" data-del-proj="${idx}"><i class="fas fa-trash"></i></button>
+        <button class="delete-btn" data-del-proj="${idx}" style="flex-shrink:0;"><i class="fas fa-trash"></i></button>
       </div>
       <div class="admin-card-body" id="proj-body-${idx}">
         <!-- Cover image -->
@@ -507,11 +530,15 @@ function renderProjectCards(projects) {
       </div>`;
     list.appendChild(card);
 
-    // Toggle collapse
-    card.querySelector(`[data-card="${idx}"]`).addEventListener('click', () => {
+    // Toggle collapse — clicking header or chevron
+    const toggleHandler = (e) => {
+      if (e.target.closest('[data-del-proj]')) return; // don't toggle when delete clicked
       const body = $(`proj-body-${idx}`);
-      body.classList.toggle('collapsed');
-    });
+      const btn  = card.querySelector(`[data-card="${idx}"].admin-card-toggle`);
+      body.classList.toggle('open');
+      btn.classList.toggle('open');
+    };
+    card.querySelector('.admin-card-header').addEventListener('click', toggleHandler);
 
     // Remove image button
     $(`proj-img-remove-${idx}`).addEventListener('click', async () => {
@@ -652,10 +679,10 @@ function renderExperienceCards(exp) {
     const card = document.createElement('div');
     card.className = 'admin-card';
     card.innerHTML = `
-      <div class="admin-card-header">
-        <h4>${escHtml(e.title || 'Untitled')}</h4>
-        <button class="admin-card-toggle" data-exp="${idx}"><i class="fas fa-chevron-down"></i></button>
-        <button class="delete-btn" data-del-exp="${idx}"><i class="fas fa-trash"></i></button>
+      <div class="admin-card-header" data-exp="${idx}">
+        <h4><i class="fas fa-briefcase" style="margin-right:8px;opacity:.4;"></i>${escHtml(e.title || 'Untitled')}</h4>
+        <button class="admin-card-toggle" data-exp-btn="${idx}"><i class="fas fa-chevron-down"></i></button>
+        <button class="delete-btn" data-del-exp="${idx}" style="flex-shrink:0;"><i class="fas fa-trash"></i></button>
       </div>
       <div class="admin-card-body" id="exp-body-${idx}">
         <div class="field-row">
@@ -692,6 +719,15 @@ function renderExperienceCards(exp) {
      `exp-loc-${idx}`,`exp-desc-${idx}`,`exp-highlights-${idx}`,`exp-current-${idx}`].forEach(id => {
       const el = $(id);
       if (el) el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => markUnsaved());
+    });
+
+    // Toggle collapse
+    card.querySelector('.admin-card-header').addEventListener('click', (e) => {
+      if (e.target.closest('[data-del-exp]')) return;
+      const body = $(`exp-body-${idx}`);
+      const btn  = card.querySelector(`[data-exp-btn="${idx}"]`);
+      body.classList.toggle('open');
+      if (btn) btn.classList.toggle('open');
     });
   });
 
@@ -799,6 +835,18 @@ function escHtml(str) {
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
+</script>
+
+<script>
+// ── Admin scroll-to-top ─────────────────────────────────────────────────────
+(function() {
+  const btn = document.getElementById('adminScrollTop');
+  if (!btn) return;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+})();
 </script>
 </body>
 </html>

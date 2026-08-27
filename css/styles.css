@@ -1204,6 +1204,50 @@ h1, h2, h3, h4, h5, h6 {
 .scroll-top:hover { transform: translateY(-3px); }
 
 /* ══════════════════════════════════════════════════════════
+   IMAGE LIGHTBOX
+══════════════════════════════════════════════════════════ */
+.lightbox {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,.92);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+  cursor: zoom-out;
+}
+.lightbox.open { opacity: 1; visibility: visible; }
+.lightbox img {
+  max-width: 100%; max-height: 90vh;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  transform: scale(.95);
+  transition: transform .25s cubic-bezier(0.16,1,0.3,1);
+  cursor: default;
+  object-fit: contain;
+}
+.lightbox.open img { transform: scale(1); }
+.lightbox-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,.25); }
+.lightbox-caption {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,.7); font-size: .82rem;
+  background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
+  padding: 6px 16px; border-radius: 100px;
+  pointer-events: none; white-space: nowrap;
+}
+
+/* Make project images show a zoom cursor */
+.proj-card-img img, .featured-proj-img img { cursor: zoom-in; }
+
+/* ══════════════════════════════════════════════════════════
    MODAL
 ══════════════════════════════════════════════════════════ */
 .modal-overlay {
