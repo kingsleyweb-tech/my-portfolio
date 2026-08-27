@@ -258,9 +258,10 @@ function renderProjects(projects, engineeringProjects) {
       const order1 = idx % 2 === 0 ? '' : 'style="order: 2;"';
       const order2 = idx % 2 === 0 ? '' : 'style="order: 1;"';
 
+      const fitClass = p.imageFit ? `img-fit-${p.imageFit}` : 'img-fit-cover';
       const techHtml = p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('');
       const imgHtml = p.image
-        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+        ? `<img src="${p.image}" alt="${p.title}" class="${fitClass}" loading="lazy">`
         : `<div class="feat-placeholder"><i class="${p.icon || 'fas fa-laptop-code'}"></i></div>`;
 
       const demoBtn = p.liveUrl
@@ -296,9 +297,10 @@ function renderProjects(projects, engineeringProjects) {
   if (gridContainer) {
     const nonFeatured = projects.filter(p => !p.featured);
     gridContainer.innerHTML = nonFeatured.map(p => {
+      const fitClass = p.imageFit ? `img-fit-${p.imageFit}` : 'img-fit-cover';
       const techHtml = p.tech.slice(0, 3).map(t => `<span class="tech-tag">${t}</span>`).join('');
       const imgHtml = p.image
-        ? `<img src="${p.image}" alt="${p.title}" loading="lazy">`
+        ? `<img src="${p.image}" alt="${p.title}" class="${fitClass}" loading="lazy">`
         : `<div class="proj-card-placeholder"><i class="${p.icon || 'fas fa-code'}"></i></div>`;
 
       return `
@@ -647,8 +649,9 @@ function initModal() {
       </div>
     ` : '';
 
+    const fitClass = project.imageFit ? `img-fit-${project.imageFit}` : 'img-fit-cover';
     const imgHtml = project.image 
-      ? `<img src="${project.image}" alt="${project.title}" class="modal-real-img">`
+      ? `<img src="${project.image}" alt="${project.title}" class="modal-real-img ${fitClass}">`
       : `<div class="modal-placeholder-img"><i class="${project.icon || 'fas fa-code'}"></i></div>`;
 
     const demoBtn = project.liveUrl

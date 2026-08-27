@@ -97,7 +97,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       organization: "Self-Directed Learning",
       type: "Project Work",
       location: "Ghana",
-      period: "2024 – Present",
+      period: "2025 – Present",
       current: true,
       description: "Building real-world web applications to develop my skills across frontend, backend, databases, and system design. Each project is an opportunity to learn something new.",
       highlights: [
@@ -242,7 +242,7 @@ const DEFAULT_PORTFOLIO_DATA = {
         "Automated results generation",
         "Admin dashboard"
       ],
-      year: "2024"
+      year: "2025"
     },
     {
       id: 7,

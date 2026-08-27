@@ -234,20 +234,24 @@
 
     <!-- ─── PROJECTS ─────────────────────────────────────────────── -->
     <div class="dash-panel active" id="tab-projects">
-      <p class="panel-title">Projects</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px;">
+        <p class="panel-title" style="margin:0; flex:1;">Projects</p>
+        <button class="add-btn" id="addProjectBtn" style="width:auto; margin:0; padding:8px 16px;">
+          <i class="fas fa-plus"></i> Add New Project
+        </button>
+      </div>
       <div id="projects-list"></div>
-      <button class="add-btn" id="addProjectBtn">
-        <i class="fas fa-plus"></i> Add New Project
-      </button>
     </div>
 
     <!-- ─── EXPERIENCE ────────────────────────────────────────────── -->
     <div class="dash-panel" id="tab-experience">
-      <p class="panel-title">Experience &amp; Education</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px;">
+        <p class="panel-title" style="margin:0; flex:1;">Experience &amp; Education</p>
+        <button class="add-btn" id="addExpBtn" style="width:auto; margin:0; padding:8px 16px;">
+          <i class="fas fa-plus"></i> Add Entry
+        </button>
+      </div>
       <div id="experience-list"></div>
-      <button class="add-btn" id="addExpBtn">
-        <i class="fas fa-plus"></i> Add Entry
-      </button>
     </div>
 
 
@@ -506,8 +510,16 @@ function renderProjectCards(projects) {
                 `<option value="${c}" ${proj.category===c?'selected':''}>${c}</option>`).join('')}
             </select></div>
         </div>
-        <div class="field-group"><label>Category Label</label>
-          <input type="text" id="proj-catlabel-${idx}" value="${escHtml(proj.categoryLabel||'')}"></div>
+        <div class="field-row">
+          <div class="field-group"><label>Category Label</label>
+            <input type="text" id="proj-catlabel-${idx}" value="${escHtml(proj.categoryLabel||'')}"></div>
+          <div class="field-group"><label>Image Display Fit</label>
+            <select id="proj-imgfit-${idx}">
+              <option value="cover" ${proj.imageFit==='cover'||!proj.imageFit?'selected':''}>Standard (Crop/Fill)</option>
+              <option value="contain-laptop" ${proj.imageFit==='contain-laptop'?'selected':''}>Laptop Screenshot (Fit Top/Black Bg)</option>
+              <option value="contain-mobile" ${proj.imageFit==='contain-mobile'?'selected':''}>Mobile Screenshot (Fit Center/Black Bg)</option>
+            </select></div>
+        </div>
         <div class="field-group"><label>Description</label>
           <textarea id="proj-desc-${idx}" rows="2">${escHtml(proj.description||'')}</textarea></div>
         <div class="field-row">
@@ -618,7 +630,7 @@ function renderProjectCards(projects) {
     // Listen for field changes
     [`proj-title-${idx}`,`proj-desc-${idx}`,`proj-live-${idx}`,`proj-github-${idx}`,
      `proj-tech-${idx}`,`proj-year-${idx}`,`proj-highlights-${idx}`,`proj-catlabel-${idx}`,
-     `proj-cat-${idx}`,`proj-featured-${idx}`].forEach(id => {
+     `proj-cat-${idx}`,`proj-featured-${idx}`,`proj-imgfit-${idx}`].forEach(id => {
       const el = $(id);
       if (el) el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => markUnsaved());
     });
@@ -652,6 +664,7 @@ function collectProjectForms() {
       year:          $(`proj-year-${idx}`)?.value.trim()      || live.year,
       highlights:    ($(`proj-highlights-${idx}`)?.value || '').split('\n').map(h=>h.trim()).filter(Boolean),
       featured:      $(`proj-featured-${idx}`)?.checked ?? live.featured,
+      imageFit:      $(`proj-imgfit-${idx}`)?.value || 'cover',
       // image is already set directly on CURRENT_DATA.projects[idx] by the upload handler
       image:         live.image || '',
     };

@@ -1247,6 +1247,24 @@ h1, h2, h3, h4, h5, h6 {
 /* Make project images show a zoom cursor */
 .proj-card-img img, .featured-proj-img img { cursor: zoom-in; }
 
+/* Image Display Fits */
+.img-fit-cover {
+  object-fit: cover !important;
+  object-position: center !important;
+}
+.img-fit-contain-laptop {
+  object-fit: contain !important;
+  object-position: top !important;
+  background: #000000 !important;
+  padding: 8px;
+}
+.img-fit-contain-mobile {
+  object-fit: contain !important;
+  object-position: center !important;
+  background: #000000 !important;
+  padding: 8px;
+}
+
 /* ══════════════════════════════════════════════════════════
    MODAL
 ══════════════════════════════════════════════════════════ */
